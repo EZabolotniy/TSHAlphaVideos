@@ -62,5 +62,6 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 - (void)loadVideoWithCompletionBlock:(void (^)(BOOL success))completionBlock;
 
 - (CGSize)videoSize;
+- (AVPlayer *)playerForVideoURL;
     
 @end
