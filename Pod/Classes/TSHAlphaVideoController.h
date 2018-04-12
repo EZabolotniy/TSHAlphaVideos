@@ -35,7 +35,9 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 
 + (TSHAlphaVideoController *)videoWithRGBVideoFile:(NSString *)rgbVideoFilename
                                      withDelegate:(id<TSHAlphaVideoDelegate>)delegate;
-
+- (instancetype)initWithRGBVideoFile:(NSString *)rgbVideoFilename
+                        withDelegate:(id<TSHAlphaVideoDelegate>)delegate;
+    
 @property (nonatomic, weak) id<TSHAlphaVideoDelegate> delegate;
 
 @property (nonatomic, assign) BOOL repeats;
