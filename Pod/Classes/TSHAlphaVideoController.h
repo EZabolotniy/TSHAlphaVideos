@@ -61,4 +61,6 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 - (void)loadVideo;
 - (void)loadVideoWithCompletionBlock:(void (^)(BOOL success))completionBlock;
 
+- (CGSize)videoSize;
+    
 @end
