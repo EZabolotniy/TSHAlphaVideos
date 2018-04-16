@@ -162,7 +162,7 @@
     [self removeObservers];
 
     self.shouldResumePlay = self.state == TSHAlphaVideoStatePlaying;
-    [self pause];
+    [self stop];
 }
 
 - (void)didReceiveMemoryWarning
