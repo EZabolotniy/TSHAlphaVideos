@@ -329,7 +329,7 @@
 {
     [self willPlay];
 
-    [self turnOnOrOffAudio];
+//    [self turnOnOrOffAudio];
 
     [self.player play];
     self.state = TSHAlphaVideoStatePlaying;
