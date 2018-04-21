@@ -34,10 +34,10 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 @interface TSHAlphaVideoController : UIViewController<AVPlayerItemOutputPullDelegate>
 
 + (TSHAlphaVideoController *)videoWithRGBVideoFile:(NSString *)rgbVideoFilename
-                                     withDelegate:(id<TSHAlphaVideoDelegate>)delegate;
+                                      withDelegate:(id<TSHAlphaVideoDelegate>)delegate;
 - (instancetype)initWithRGBVideoFile:(NSString *)rgbVideoFilename
                         withDelegate:(id<TSHAlphaVideoDelegate>)delegate;
-    
+
 @property (nonatomic, weak) id<TSHAlphaVideoDelegate> delegate;
 
 @property (nonatomic, assign) BOOL repeats;
@@ -51,6 +51,7 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 - (void)restart;
 - (void)stop;
 - (void)pause;
+- (void)removeGlView;
 
 - (void)seekToTime:(NSTimeInterval)seconds;
 
@@ -63,5 +64,5 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 
 - (CGSize)videoSize;
 - (AVPlayer *)playerForVideoURL;
-    
+
 @end

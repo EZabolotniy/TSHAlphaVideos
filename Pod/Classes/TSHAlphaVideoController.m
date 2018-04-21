@@ -26,14 +26,14 @@
 @implementation TSHAlphaVideoController
 
 + (TSHAlphaVideoController *)videoWithRGBVideoFile:(NSString *)rgbVideoFilename
-                                     withDelegate:(id<TSHAlphaVideoDelegate>)delegate
+                                      withDelegate:(id<TSHAlphaVideoDelegate>)delegate
 {
     if (![self canPlayVideoOfName:rgbVideoFilename]) {
         return nil;
     }
-
+    
     TSHAlphaVideoController *videoController = [[TSHAlphaVideoController alloc] initWithRGBVideoFile:rgbVideoFilename
-                                                                                      withDelegate:delegate];
+                                                                                        withDelegate:delegate];
     return videoController;
 }
 
@@ -76,11 +76,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     // set up the size of the view, and the width should be half the size of the video
     // because the video contains the rgb and alpha portions side by side.
     CGRect viewFrame = CGRectMake(0, 0, .5f * self.videoSize.width, self.videoSize.height);
-
+    
     self.view.frame = viewFrame;
     self.view.clipsToBounds = YES;
     self.view.backgroundColor = [UIColor clearColor];
@@ -91,7 +91,7 @@
     float playerVolume = 1;
     AVAsset *avAsset = self.player.currentItem.asset;
     NSArray *audioTracks = [avAsset tracksWithMediaType:AVMediaTypeAudio];
-
+    
     NSMutableArray *allAudioParams = [NSMutableArray array];
     for (AVAssetTrack *track in audioTracks) {
         AVMutableAudioMixInputParameters *audioInputParams = [AVMutableAudioMixInputParameters audioMixInputParameters];
@@ -104,20 +104,20 @@
     [self.player.currentItem setAudioMix:audioVolMix];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-
+    [super viewDidAppear:animated];
+    
     [self addObservers];
-    if (self.shouldResumePlay) {
-        [self play];
-    }
+    //    if (self.shouldResumePlay) {
+    //        [self play];
+    //    }
 }
 
 - (void)addObservers
 {
     [self removeObservers]; // safe add
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appWillResignActive)
                                                  name:UIApplicationWillResignActiveNotification
@@ -126,7 +126,7 @@
                                              selector:@selector(appDidEnterBackground)
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appDidBecomeActive)
                                                  name:UIApplicationDidBecomeActiveNotification
@@ -135,7 +135,7 @@
                                              selector:@selector(appWillEnterForeground)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
-
+    
 }
 
 - (void)removeObservers
@@ -146,23 +146,23 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidEnterBackgroundNotification
                                                   object:nil];
-
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidBecomeActiveNotification
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationWillEnterForegroundNotification
                                                   object:nil];
-
+    
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewWillDisappear:animated];
     [self removeObservers];
-
+    
     self.shouldResumePlay = self.state == TSHAlphaVideoStatePlaying;
-    [self stop];
+    [self pause];
 }
 
 - (void)didReceiveMemoryWarning
@@ -191,7 +191,7 @@
         CGSize naturalSize = track.naturalSize;
         _videoSize = CGSizeMake(screenFactor * naturalSize.width, screenFactor * naturalSize.height);
     }
-
+    
     return _videoSize;
 }
 
@@ -217,6 +217,11 @@
         [self.view addSubview:_glView];
     }
     return _glView;
+}
+
+- (void)removeGlView {
+    [_glView removeFromSuperview];
+    _glView = nil;
 }
 
 - (NSTimeInterval)duration
@@ -265,6 +270,7 @@
 
 - (void)loadVideoWithCompletionBlock:(void (^)(BOOL success))completionBlock
 {
+    self.state = TSHAlphaVideoStateLoading;
     self.player = [self playerForVideoURL];
     if (!self.player) {
         if (completionBlock) {
@@ -311,6 +317,10 @@
 
 - (void)createDisplayLink
 {
+    if (self.displayLink != nil) {
+        return;
+    }
+    
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
     [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
     self.displayLink.frameInterval = 2;
@@ -328,9 +338,9 @@
 - (void)startPlayer
 {
     [self willPlay];
-
-//    [self turnOnOrOffAudio];
-
+    
+    //    [self turnOnOrOffAudio];
+    
     [self.player play];
     self.state = TSHAlphaVideoStatePlaying;
     self.shouldResumePlay = NO;  // reset the state
@@ -351,9 +361,9 @@
         return;
     }
     self.state = TSHAlphaVideoStatePaused;
-
+    
     [UIApplication sharedApplication].idleTimerDisabled = NO;
-
+    
     if (self.displayLink) {
         self.displayLink.paused = YES;
     }
@@ -366,7 +376,7 @@
     if (self.state == TSHAlphaVideoStateStopped) {
         return;
     }
-
+    
     if ([self shouldStop]) {
         [self willStop];
         [self pause];
@@ -419,6 +429,7 @@
                     // TODO: video has not been loaded from server yet...
                 }
             }];
+            break;
         }
         case TSHAlphaVideoStateLoading:
         case TSHAlphaVideoStatePlaying:
@@ -492,14 +503,14 @@
     
     NSTimeInterval nextDisplayTime = sender.timestamp + sender.duration;
     CMTime itemTime = [self.videoOutput itemTimeForHostTime:nextDisplayTime];
-
+    
     if ([self.videoOutput hasNewPixelBufferForItemTime:itemTime] && [UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
         CVPixelBufferRelease(_pixelBuffer);
         _pixelBuffer = [self.videoOutput copyPixelBufferForItemTime:itemTime
                                                  itemTimeForDisplay:nil];
         if (_pixelBuffer) {
             [self.glView displayPixelBuffer:_pixelBuffer];
-
+            
             NSTimeInterval timeInterval = CMTimeGetSeconds(itemTime);
             [self alphaVideoDidPlayFrameAtTimeInterval:timeInterval];
         }
