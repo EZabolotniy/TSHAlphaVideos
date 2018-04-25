@@ -419,7 +419,7 @@
     switch (self.state) {
         case TSHAlphaVideoStatePaused:
             [self startPlayer];
-            didStart();
+            if (didStart) didStart();
             break;
         case TSHAlphaVideoStateStopped:{
             __weak typeof(self) weakSelf = self;
@@ -429,14 +429,13 @@
                 } else {
                     // TODO: video has not been loaded from server yet...
                 }
-                didStart();
-                
+                if (didStart) didStart();
             }];
             break;
         }
         case TSHAlphaVideoStateLoading:
         case TSHAlphaVideoStatePlaying:
-            didStart();
+            if (didStart) didStart();
             return;
     }
 }
