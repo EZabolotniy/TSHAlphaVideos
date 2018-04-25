@@ -242,7 +242,7 @@
 - (void)playIfShould
 {
     if (self.shouldResumePlay) {
-        [self play];
+        [self play:nil];
     }
 }
 
@@ -401,10 +401,10 @@
     }
 }
 
-- (void)restart
+- (void)restart:(void (^_Nullable)())didStart
 {
     [self seekToTime:0];
-    [self play];
+    [self play:didStart];
 }
 
 - (void)willPlay
@@ -414,11 +414,12 @@
     }
 }
 
-- (void)play
+- (void)play:(void (^_Nullable)())didStart
 {
     switch (self.state) {
         case TSHAlphaVideoStatePaused:
             [self startPlayer];
+            didStart();
             break;
         case TSHAlphaVideoStateStopped:{
             __weak typeof(self) weakSelf = self;
@@ -428,11 +429,14 @@
                 } else {
                     // TODO: video has not been loaded from server yet...
                 }
+                didStart();
+                
             }];
             break;
         }
         case TSHAlphaVideoStateLoading:
         case TSHAlphaVideoStatePlaying:
+            didStart();
             return;
     }
 }

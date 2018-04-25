@@ -47,8 +47,8 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 @property (nonatomic, readonly) NSTimeInterval duration;
 @property (nonatomic, readonly) TSHAlphaVideoState state;
 
-- (void)play;
-- (void)restart;
+- (void)play:(void (^_Nullable)())didStart;
+- (void)restart:(void (^_Nullable)())didStart;
 - (void)stop;
 - (void)pause;
 - (void)removeGlView;
