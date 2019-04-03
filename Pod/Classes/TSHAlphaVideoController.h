@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
-static NSString *const kDefaultAlphaVideoFileExtension = @"mp4";
+static NSString * _Nonnull const kDefaultAlphaVideoFileExtension = @"mp4";
 
 @class TSHAlphaVideoController;
 
@@ -60,9 +60,9 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 // For example, when you are running two videos back-to-back, you can load the second video
 // so it is ready to play directly after the first video is finished.
 - (void)loadVideo;
-- (void)loadVideoWithCompletionBlock:(void (^)(BOOL success))completionBlock;
+- (void)loadVideoWithCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 - (CGSize)videoSize;
-- (AVPlayer *)playerForVideoURL;
+- (nullable AVPlayer *)playerForVideoURL;
 
 @end
