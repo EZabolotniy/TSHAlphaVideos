@@ -9,18 +9,18 @@ static NSString * _Nonnull const kDefaultAlphaVideoFileExtension = @"mp4";
 
 @optional
 
-- (void)alphaVideoWillPlay:(TSHAlphaVideoController *)alphaVideo;
-- (void)alphaVideoDidPlay:(TSHAlphaVideoController *)alphaVideo;
+- (void)alphaVideoWillPlay:(nonnull TSHAlphaVideoController *)alphaVideo;
+- (void)alphaVideoDidPlay:(nonnull TSHAlphaVideoController *)alphaVideo;
 
-- (void)        alphaVideo:(TSHAlphaVideoController *)alphaVideo
+- (void)alphaVideo:(nonnull TSHAlphaVideoController *)alphaVideo
 didPlayFrameAtTimeInterval:(NSTimeInterval)timeInterval
-      previousTimeInterval:(NSTimeInterval)previousTimeInterval;
+previousTimeInterval:(NSTimeInterval)previousTimeInterval;
 
-- (BOOL)alphaVideoShouldStop:(TSHAlphaVideoController *)alphaVideo;
-- (void)alphaVideoWillStop:(TSHAlphaVideoController *)alphaVideo;
-- (void)alphaVideoDidStop:(TSHAlphaVideoController *)alphaVideo;
+- (BOOL)alphaVideoShouldStop:(nonnull TSHAlphaVideoController *)alphaVideo;
+- (void)alphaVideoWillStop:(nonnull TSHAlphaVideoController *)alphaVideo;
+- (void)alphaVideoDidStop:(nonnull TSHAlphaVideoController *)alphaVideo;
 
-- (void)memoryWarningStoppedVideo:(TSHAlphaVideoController *)alphaVideo;
+- (void)memoryWarningStoppedVideo:(nonnull TSHAlphaVideoController *)alphaVideo;
 
 @end
 
@@ -33,12 +33,12 @@ typedef NS_ENUM(NSInteger, TSHAlphaVideoState) {
 
 @interface TSHAlphaVideoController : UIViewController<AVPlayerItemOutputPullDelegate>
 
-+ (TSHAlphaVideoController *)videoWithRGBVideoFile:(NSString *)rgbVideoFilename
-                                      withDelegate:(id<TSHAlphaVideoDelegate>)delegate;
-- (instancetype)initWithRGBVideoFile:(NSString *)rgbVideoFilename
-                        withDelegate:(id<TSHAlphaVideoDelegate>)delegate;
++ (nullable TSHAlphaVideoController *)videoWithRGBVideoFile:(nullable NSString *)rgbVideoFilename
+                                               withDelegate:(nullable id<TSHAlphaVideoDelegate>)delegate;
+- (nullable instancetype)initWithRGBVideoFile:(nullable NSString *)rgbVideoFilename
+                                 withDelegate:(nullable id<TSHAlphaVideoDelegate>)delegate;
 
-@property (nonatomic, weak) id<TSHAlphaVideoDelegate> delegate;
+@property (nonatomic, weak, nullable) id<TSHAlphaVideoDelegate> delegate;
 
 @property (nonatomic, assign) BOOL repeats;
 @property (nonatomic, assign) BOOL stopInsteadOfPauseWhenViewEntersBackground;
